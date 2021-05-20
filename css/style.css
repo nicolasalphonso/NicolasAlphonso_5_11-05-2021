@@ -56,7 +56,7 @@ nav a:hover {
 .vignetteProduit {
     width: 45%;
     height: 750px;
-    margin-bottom: 50px;
+    margin-bottom: 10px;
     margin-right: 3%;
 }
 
@@ -68,10 +68,15 @@ nav a:hover {
 
 .image__vignetteProduit {
     width: 100%;
-    max-height: 80%;
-    object-fit:contain;
+    height: 70%;
+    object-fit:cover;
 }
 
 .titre__vignetteProduit {
     font-size: x-large;
 }
+
+.description__vignetteProduit {
+
+}
+

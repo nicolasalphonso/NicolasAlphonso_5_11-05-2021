@@ -4,6 +4,24 @@ class Furniture {
     }
 }
 
+function $_GET(param) {
+	var vars = {};
+	window.location.href.replace( location.hash, '' ).replace( 
+		/[?&]+([^=&]+)=?([^&]*)?/gi, // regexp
+		function( m, key, value ) { // callback
+			vars[key] = value !== undefined ? value : '';
+		}
+	);
+
+	if ( param ) {
+		return vars[param] ? vars[param] : null;	
+	}
+	return vars;
+}
+
+function choixProduit(id) {
+
+}
 
 fetch("http://localhost:3000/api/furniture")
 .then ( data => data.json())
@@ -11,16 +29,15 @@ fetch("http://localhost:3000/api/furniture")
     for (let jsonFurniture of jsonListFurniture) {
         let furniture = new Furniture(jsonFurniture);
         document.getElementById("affichageDesFurnitures").innerHTML +=
-                    `<article class="vignetteProduit">
-                    <figure>
-                        <img src="${furniture.imageUrl}" alt="Photo du modèle ${furniture.name}" class="image__vignetteProduit" />
-                        <figcaption>
-                            <h4 class="titre__vignetteProduit">${furniture.name}</h4>
-                            <p class="description__vignetteProduit">${furniture.description}</p>
-                            <p class="prix__vignetteProduit">${furniture.price} €</p>
-                        </figcaption>
-                    </figure>
-                </article>
+                    `<div class="card">
+                    <img src="${furniture.imageUrl}" alt="Photo du modèle ${furniture.name}"/>
+                    <div class="card-body">
+                            <h4 class="card-title">${furniture.name}</h4>
+                            <p class="card-text">${furniture.description}</p>
+                            <p class="card-text">${(furniture.price/100).toFixed(2).replace( ".", "," )} €</p>
+                            <a href="produit.html?id=${furniture._id}" class="btn btn-primary selecteurProduit" data-id=${furniture._id}>Voir la fiche produit</a>
+                    </div>
+                </div>
                     `;
     }
 });
