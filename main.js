@@ -29,14 +29,16 @@ fetch("http://localhost:3000/api/furniture")
     for (let jsonFurniture of jsonListFurniture) {
         let furniture = new Furniture(jsonFurniture);
         document.getElementById("affichageDesFurnitures").innerHTML +=
-                    `<div class="card">
-                    <img src="${furniture.imageUrl}" alt="Photo du modèle ${furniture.name}"/>
+                    `<div class="col-3" >
+                    <div class="card cardProduit">
+                    <img class="cardImg" src="${furniture.imageUrl}" alt="Photo du modèle ${furniture.name}"/>
                     <div class="card-body">
                             <h4 class="card-title">${furniture.name}</h4>
                             <p class="card-text">${furniture.description}</p>
                             <p class="card-text">${(furniture.price/100).toFixed(2).replace( ".", "," )} €</p>
                             <a href="produit.html?id=${furniture._id}" class="btn btn-primary selecteurProduit" data-id=${furniture._id}>Voir la fiche produit</a>
                     </div>
+                </div>
                 </div>
                     `;
     }

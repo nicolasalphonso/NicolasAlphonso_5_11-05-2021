@@ -1,82 +1,16 @@
-body {
+.cardProduit {
+    height: 470px;
+}
+
+.cardImg {
+    width: 100%;
+    height: 40%;
+}
+
+.cardProduitSeul {
     width: 100%;
 }
 
-.container {
-    width: 100%;
-    max-width: 1200px;
-    margin: auto;
-
+.btnCommandeProduit {
+    margin-top: 20px;
 }
-
-header {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    background-color: rosybrown;
-}
-
-#zoneLogo {
-    width: 45%;    
-}
-
-nav {
-    width: 55%;
-    display: flex;
-    align-items: center;
-}
-
-nav ul {
-    width: 100%;
-    padding: 0;
-    display: flex;
-    
-}
-
-nav li {
-    display: inline;
-    width: 33%;
-}
-
-nav a {
-    text-decoration: none;
-    color: black;
-    font-size:xx-large;
-}
-
-nav a:hover {
-    color: brown;
-}
-
-#affichageDesFurnitures {
-    display: flex;
-    flex-flow: wrap;
-}
-
-.vignetteProduit {
-    width: 45%;
-    height: 750px;
-    margin-bottom: 10px;
-    margin-right: 3%;
-}
-
-.vignetteProduit figure {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-}
-
-.image__vignetteProduit {
-    width: 100%;
-    height: 70%;
-    object-fit:cover;
-}
-
-.titre__vignetteProduit {
-    font-size: x-large;
-}
-
-.description__vignetteProduit {
-
-}
-
