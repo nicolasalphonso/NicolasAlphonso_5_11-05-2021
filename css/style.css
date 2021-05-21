@@ -14,3 +14,12 @@
 .btnCommandeProduit {
     margin-top: 20px;
 }
+
+.imagePanier {
+    max-height: 180px;
+    max-width: 100%;
+}
+
+.articlePanier {
+    margin-bottom: 30px;
+}

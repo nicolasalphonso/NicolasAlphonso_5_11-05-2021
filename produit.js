@@ -48,7 +48,7 @@ fetch(url)
                                 <option value="">--Choisissez un vernis--</option>
                                 </select>
                             </form>
-                            <a href="#" class="btn btn-primary btnCommandeProduit" data-id=${
+                            <a href="panier.html" class="btn btn-primary btnCommandeProduit" data-id=${
                               furniture._id
                             }>Commander</a>
                         </div>
