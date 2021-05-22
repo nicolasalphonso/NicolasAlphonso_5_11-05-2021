@@ -1,4 +1,4 @@
-# Orinoco #
+Projet 5 - formation OpenClassrooms de Développeur web
 
 This is the back end server for Project 5 of the Junior Web Developer path.
 
