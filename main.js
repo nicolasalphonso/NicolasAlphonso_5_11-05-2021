@@ -41,5 +41,7 @@ fetch("http://localhost:3000/api/furniture")
                 </div>
                 </div>
                     `;
+        console.log(furniture);
+        localStorage.setItem(`${furniture._id}`, JSON.stringify(furniture));
     }
 });
