@@ -1,25 +1,49 @@
 .cardProduit {
-    height: 470px;
+  height: 470px;
 }
 
 .cardImg {
-    width: 100%;
-    height: 40%;
+  width: 100%;
+  height: 40%;
 }
 
 .cardProduitSeul {
-    width: 100%;
+  width: 100%;
 }
 
 .btnCommandeProduit {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .imagePanier {
-    max-height: 180px;
-    max-width: 100%;
+  max-height: 180px;
+  max-width: 100%;
 }
 
 .articlePanier {
-    margin-bottom: 30px;
+  margin-bottom: 30px;
+}
+
+#affichageIconePanier {
+  margin-left: 30px;
+  height: 70px;
+  width: 60px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-self: center;
+}
+
+#iconePanier {
+  
+  font-size: 42px;
+  height: 100%;
+  width: 100%;
+}
+
+#nombreArticlesPanier {
+  position: relative;
+  right: 30px;
+  bottom: 5px;
+  color: orangered;
 }

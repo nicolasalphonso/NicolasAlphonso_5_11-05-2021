@@ -11,6 +11,11 @@
     />
 
     <script src="main.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
     <header>
@@ -80,6 +85,11 @@
                 >
               </li>
             </ul>
+            <div id="affichageIconePanier">
+              <i class="bi bi-cart-fill" id="iconePanier"></i>
+              <span id="nombreArticlesPanier">5</span>
+              <a href="panier.html" class="stretched-link"></a>
+            </div>
           </div>
           <!-- Links -->
         </nav>
@@ -88,7 +98,9 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="index.html">Accueil</a>
+                <a class="nav-link active" aria-current="page" href="index.html"
+                  >Accueil</a
+                >
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#">Séjour</a>
@@ -136,9 +148,7 @@
             intérieur et le rendre unique.
           </p>
         </div>
-        <div class="row" id="affichageDesFurnitures">
-          
-        </div>
+        <div class="row" id="affichageDesFurnitures"></div>
       </main>
 
       <footer>

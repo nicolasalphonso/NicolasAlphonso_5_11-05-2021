@@ -15,11 +15,33 @@ function recuperationParametreUrl(param) {
   return vars;
 }
 
+// fonction pour ajouter un article au panier
+function ajoutArticle() {
+  var panier = {};
+  // si le panier n'existe pas, il faut le créer
+  if (localStorage.getItem("Panier") === null) {
+    panier[id] = 1;
+    localStorage.setItem("Panier",JSON.stringify(panier));
+  }
+  // si le panier existe
+  else {
+    //on transforme le panier en dictionnaire
+    panier = letpanierJSON.parse(localStorage.getItem("Panier"));
+    // si l'entrée existe ajouter 1 à la quantité
+      window.alert(panier)
+    // sinon créer l'entrée avec une quantité de 1
+
+  }
+
+  
+}
 class Furniture {
   constructor(jsonFurniture) {
     jsonFurniture && Object.assign(this, jsonFurniture);
   }
 }
+
+
 
 // recuperation du paramètre id passé dans l'url
 var id = recuperationParametreUrl("id");
@@ -63,11 +85,10 @@ setTimeout(function(){ document.getElementById("affichageDuProduit").innerHTML =
                             <option value="">--Choisissez un vernis--</option>
                             </select>
                         </form>
-                        <a href="panier.html?${
-                          furniture._id
-                        }" class="btn btn-primary btnCommandeProduit" data-id=${
-  furniture._id
-}>Commander</a>
+                        <a href="panier.html" class="btn btn-primary btnCommandeProduit" data-id=${
+                        furniture._id
+                        }>Commander</a>
+                        <button class="btn btn-danger"  id="btnCommande">
                     </div>
                 </div>
 `;
@@ -76,5 +97,14 @@ var listeDeroulante = document.getElementById("selectionVernis");
     for (let vernis in furniture.varnish) {
       listeDeroulante.innerHTML += `<option value="${furniture.varnish[vernis]}">${furniture.varnish[vernis]}</option>`;
     }
+
+document.getElementById("btnCommande").addEventListener("click", ajoutArticle);
+
+
 }, 300);
+
+// Un clic sur le bouton déclenche l'ajout de l'article au panier
+
+
+
 
