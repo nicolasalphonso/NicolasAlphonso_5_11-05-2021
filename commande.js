@@ -24,32 +24,9 @@ function CalculSommePanier(panier) {
   return somme;
 }
 
-// fonction pour ajouter un article au panier
-function ajoutArticle() {
-  var panier = {};
-  // si le panier n'existe pas, il faut le créer
-  if (localStorage.getItem("Panier") === null) {
-    panier[id] = 1;
-
-  }
-  // si le panier existe
-  else {
-    //on transforme le panier en objet
-    panier = JSON.parse(localStorage.getItem("Panier"));
-    // si l'entrée existe ajouter 1 à la quantité
-    // sinon on la crée et on lui assigne une quantité de 1
-    if (panier[id] > 0) {
-      panier[id] += 1;
-    } else {
-      panier[id] = 1;
-    }
-  }
-  localStorage.setItem("Panier", JSON.stringify(panier));
-}
-
 // Fonction d'affichage de la quantité totale de produits en dessous des articles du panier
-function AffichageQuantiteTotalePanier(pan) {
-  let quantiteTotale = CalculNombreArticlesPanier(pan);
+function AffichageQuantiteTotalePanier(panier) {
+  let quantiteTotale = CalculNombreArticlesPanier(panier);
   let elementsQuantiteTotale = document.getElementsByClassName("affichageQuantiteTotale");
   for (let i = 0; i < elementsQuantiteTotale.length; i++) {
     elementsQuantiteTotale[i].innerHTML = quantiteTotale;
@@ -60,6 +37,7 @@ function AffichageQuantiteTotalePanier(pan) {
 //Fonction d'affichage de la somme totale du panier
 function AffichageSommeTotalePanier(pan) {
   let sommeTotale = (CalculSommePanier(pan) / 100).toFixed(2).replace(".", ",");
+  console.log(sommeTotale);
   let elementsSommeTotale = document.getElementsByClassName("affichageSommeTotale");
   for (let i = 0; i < elementsSommeTotale.length; i++) {
     elementsSommeTotale[i].innerHTML = sommeTotale;
@@ -77,43 +55,10 @@ function AffichageIconePanier(pan) {
   }
 }
 
-// Fonction de contrôle de saisie des quantités
-// Pour les inputs, les incrémentations et les décrémentations
-function ControleSaisie(saisie, element) {
-  // on vérifie qu'un nombre est entré
-  // si non, on retourne une valeur de 1
-
-  // valeur que l'on ne veut pas dépasser
-  let maximum = 10;
-
-  // si la saisie est inférieure à 0, l'utilisateur veut-il supprimer l'article sinon on met 1
-  // ou si la saisie est supérieure à Max, 
-  if (saisie > maximum) {
-    alert("Vous ne pouvez pas commander plus de 10 quantités de chaque article");
-    saisie = 10;
-    element.value = saisie;
-  } else if (saisie < 1) {
-    if (confirm("Voulez-vous supprimer l'article ?")) {
-      delete panier[element.getAttribute("data-id")];
-      localStorage.setItem("Panier", JSON.stringify(panier));
-      AffichagePanier();
-      saisie = null;
-
-    } else {
-      saisie = 1;
-    }
-
-  }
-
-  return saisie;
-
-}
-
 //fontion d'affichage des produits du panier
 function AffichagePanier() {
   //On efface la zone d'affichage
   zoneAffichagePanier.innerHTML = "";
-  console.log(panier);
   if ((panier != null) && (panier != {})) {
     produitsPanier = Object.keys(panier);
     for (let produit in produitsPanier) {
@@ -121,21 +66,22 @@ function AffichagePanier() {
       zoneAffichagePanier.innerHTML +=
         `<div class="row articlePanier">
           <hr />
-          <div class="col-3">
+          <div class="col-2">
             <img src="${furniture.imageUrl
-        }" class="imagePanier" />
+        }" class="imageCommande" />
           </div>
           <div class="col-7">
             <div class="row">
+              <div class="col">
               <h3>${furniture.name}</h3>
               <p class="text-success">En stock</p>
+              </div>
+              <div class="col">
               <p>Style : unique</p>
               <!--<p>Vernis : Oak</p>-->
-            </div>
-            <div class="row">
+              
               <p>
                 <label for="quantitéArticle">Qté:</label>
-                <i class="bi bi-dash-circle" data-id="${furniture._id}"></i>
                 <input
                   type="number"
                   id="input${furniture._id}"
@@ -144,10 +90,10 @@ function AffichagePanier() {
                   min="1"
                   max="10"
                   value=${panier[produitsPanier[produit]]}
+                  disabled="disabled"
                 />
-                <i class="bi bi-plus-circle" data-id="${furniture._id}"></i>
-                <button type="button" class="btn btn-danger" data-id="${furniture._id}">Supprimer</button>
               </p>
+              </div>
             </div>
           </div>
           <div class="col-2 text-right">
@@ -247,6 +193,7 @@ let boutonsSupprimer = [];
 if (panier != null) {
   produitsPanier = Object.keys(panier);
 }
+
 AffichagePanier(zoneAffichagePanier);
 
 

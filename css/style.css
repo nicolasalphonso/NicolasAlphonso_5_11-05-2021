@@ -3,8 +3,9 @@
 }
 
 .cardImg {
-  width: 100%;
+  max-width: 100%;
   height: 40%;
+  object-fit: contain;
 }
 
 .cardProduitSeul {
@@ -22,6 +23,8 @@
 
 .articlePanier {
   margin-bottom: 30px;
+  max-height: 187px;
+  max-width: 100%;
 }
 
 #lienIconePanier {
@@ -54,4 +57,9 @@
 
 .tabDroite {
   text-align: right;
+}
+
+.imageCommande {
+  max-height: 90px;
+  max-width: 100%;
 }
