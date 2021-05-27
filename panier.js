@@ -1,51 +1,131 @@
-  // fonction pour ajouter un article au panier
-  function ajoutArticle() {
-    var panier = {};
-    // si le panier n'existe pas, il faut le créer
-    if (localStorage.getItem("Panier") === null) {
+// Fonction de calcul du nombre d'articles dans le panier
+function CalculNombreArticlesPanier(panier) {
+  let quantite = 0;
+  for (i in panier) {
+    quantite += panier[i];
+  }
+  return quantite;
+}
+
+// Fonction pour extraire le prix du produit
+function GetPrixProduit(id, produitsPanier) {
+  var furnitureJSON = localStorage.getItem(id);
+  furniture = JSON.parse(furnitureJSON);
+  return furniture.price;
+}
+
+// Fonction pour calculer la somme totale du panier
+function CalculSommePanier(panier) {
+  let somme = 0;
+  for (id in panier) {
+    prixProduit = GetPrixProduit(id, produitsPanier);
+    somme += (panier[id] * prixProduit);
+  }
+  return somme;
+}
+
+// fonction pour ajouter un article au panier
+function ajoutArticle() {
+  var panier = {};
+  // si le panier n'existe pas, il faut le créer
+  if (localStorage.getItem("Panier") === null) {
+    panier[id] = 1;
+
+  }
+  // si le panier existe
+  else {
+    //on transforme le panier en objet
+    panier = JSON.parse(localStorage.getItem("Panier"));
+    // si l'entrée existe ajouter 1 à la quantité
+    // sinon on la crée et on lui assigne une quantité de 1
+    if (panier[id] > 0) {
+      panier[id] += 1;
+    } else {
       panier[id] = 1;
-      
-    }
-    // si le panier existe
-    else {
-      //on transforme le panier en dictionnaire
-      panier = JSON.parse(localStorage.getItem("Panier"));
-      // si l'entrée existe ajouter 1 à la quantité
-      // sinon on la crée et on lui assigne une quantité de 1
-      if (panier[id] > 0) {
-        panier[id] += 1;
-      } else {
-        panier[id] = 1;
-      }
-      
-      
-    }
-  
-    localStorage.setItem("Panier",JSON.stringify(panier));
-  }
-  class Furniture {
-    constructor(jsonFurniture) {
-      jsonFurniture && Object.assign(this, jsonFurniture);
     }
   }
-   
-  let furniture = ""
+  localStorage.setItem("Panier", JSON.stringify(panier));
+}
+
+// Fonction d'affichage de la quantité totale de produits en dessous des articles du panier
+function AffichageQuantiteTotalePanier(panier) {
+  let quantiteTotale = CalculNombreArticlesPanier(panier);
+  let elementsQuantiteTotale = document.getElementsByClassName("affichageQuantiteTotale");
+  for (let i = 0; i < elementsQuantiteTotale.length; i++) {
+    elementsQuantiteTotale[i].innerHTML = quantiteTotale;
+  }
   
-  // affichage de chaque produit avec sa quantité
-  panier = JSON.parse(localStorage.getItem("Panier"));
-  produitsPanier = Object.keys(panier);
-  for (let produit in produitsPanier) {
-    var furnitureJSON = localStorage.getItem(produitsPanier[produit]);
-    furniture = JSON.parse(furnitureJSON);
-    document.getElementById("affichageProduitPanier").innerHTML +=
-    `<div class="row articlePanier">
+}
+
+//Fonction d'affichage de la somme totale du panier
+function AffichageSommeTotalePanier(pan) {
+  let sommeTotale = (CalculSommePanier(pan) / 100).toFixed(2).replace(".", ",");
+  let elementsSommeTotale = document.getElementsByClassName("affichageSommeTotale");
+  for (let i = 0; i < elementsSommeTotale.length; i++) {
+    elementsSommeTotale[i].innerHTML = sommeTotale;
+}
+}
+// Fonction d'affichage du nombre d'articles sur l'icône de panier dans le header
+function AffichageIconePanier(pan) {
+  let chiffreIconePanier = document.getElementById("nombreArticlesPanier");
+  // si le panier n'existe pas, afficher 0
+  if (pan === null) {
+    chiffreIconePanier.innerHTML = 0;
+  } else {
+    // sinon, afficher le nombre d'articles
+    chiffreIconePanier.innerHTML = CalculNombreArticlesPanier(pan);
+  }
+}
+
+// Fonction de contrôle de saisie des quantités
+// Pour les inputs, les incrémentations et les décrémentations
+function ControleSaisie(saisie, element) {
+  // on vérifie qu'un nombre est entré
+  // si non, on retourne une valeur de 1
+
+  // valeur que l'on ne veut pas dépasser
+  let maximum = 10;
+
+  // si la saisie est inférieure à 0, l'utilisateur veut-il supprimer l'article sinon on met 1
+  // ou si la saisie est supérieure à Max, 
+  if (saisie > maximum) {
+    alert("Vous ne pouvez pas commander plus de 10 quantités de chaque article");
+    saisie = 10;
+    element.value = saisie;
+  } else if (saisie < 1) {
+    if (confirm("Voulez-vous supprimer l'article ?")) {
+      delete panier[element.getAttribute("data-id")];
+      localStorage.setItem("Panier", JSON.stringify(panier));
+      AffichagePanier();
+      saisie = null;
+
+    } else {
+      saisie = 1;
+    }
+
+  }
+
+  return saisie;
+
+}
+
+//fontion d'affichage des produits du panier
+function AffichagePanier() {
+  //On efface la zone d'affichage
+  zoneAffichagePanier.innerHTML = "";
+  console.log(panier);
+  if ((panier != null) && (panier != {})) {
+    produitsPanier = Object.keys(panier);
+    for (let produit in produitsPanier) {
+      furniture = JSON.parse(localStorage.getItem(produitsPanier[produit]));
+      zoneAffichagePanier.innerHTML +=
+        `<div class="row articlePanier">
           <hr />
           <div class="col-3">
-            <img src="${
-                furniture.imageUrl
-              }" class="imagePanier" />
+            <img src="${furniture.imageUrl
+        }" class="imagePanier" />
           </div>
-          <div class="col-8">
+          <div class="col-7">
             <div class="row">
               <h3>${furniture.name}</h3>
               <p class="text-success">En stock</p>
@@ -55,70 +135,128 @@
             <div class="row">
               <p>
                 <label for="quantitéArticle">Qté:</label>
-                <i class="bi bi-dash-circle"></i>
+                <i class="bi bi-dash-circle" data-id="${furniture._id}"></i>
                 <input
                   type="number"
-                  id="quantitéArticle"
-                  name="quantitéArticle"
+                  id="input${furniture._id}"
+                  data-id="${furniture._id}"
+                  class="inputQuantite"
                   min="1"
                   max="10"
                   value=${panier[produitsPanier[produit]]}
                 />
-                <i class="bi bi-plus-circle"></i>
-                |
-                <button type="button" class="btn btn-danger">Supprimer</button>
+                <i class="bi bi-plus-circle" data-id="${furniture._id}"></i>
+                <button type="button" class="btn btn-danger" data-id="${furniture._id}">Supprimer</button>
               </p>
             </div>
           </div>
-          <div class="col-1">
+          <div class="col-2 text-right">
             <p>${(furniture.price / 100)
-                .toFixed(2)
-                .replace(".", ",")} €</p>
+          .toFixed(2)
+          .replace(".", ",")} €</p>
           </div>
-        </div>`
-      console.log(produitsPanier[produit], panier[produitsPanier[produit]]);
+        </div>`;
+
+    }
+    // Codage des boutons supprimer
+    boutonsSupprimer = document.getElementsByClassName("btn-danger");
+    for (let i = 0; i < boutonsSupprimer.length; i++) {
+      boutonsSupprimer[i].addEventListener("click", function () {
+        delete panier[this.getAttribute("data-id")];
+        localStorage.setItem("Panier", JSON.stringify(panier));
+        AffichagePanier();
+
+      })
+    }
+
+    // Codage des boutons +
+    let boutonsPlus = document.getElementsByClassName("bi-plus-circle");
+    for (let i = 0; i < boutonsPlus.length; i++) {
+      boutonsPlus[i].addEventListener("click", function () {
+        let nouvelleQuantite = panier[this.getAttribute("data-id")] += 1;
+        nouvelleQuantite = ControleSaisie(nouvelleQuantite, this);
+        panier[this.getAttribute("data-id")] = nouvelleQuantite;
+        localStorage.setItem("Panier", JSON.stringify(panier));
+        document.getElementById("input" + this.getAttribute("data-id")).setAttribute("value", nouvelleQuantite);
+        AffichagePanier(panier);
+      })
+
+    }
+
+    // Codage des boutons -
+    let boutonsMoins = document.getElementsByClassName("bi-dash-circle");
+    for (let i = 0; i < boutonsPlus.length; i++) {
+      boutonsMoins[i].addEventListener("click", function () {
+        let nouvelleQuantite = panier[this.getAttribute("data-id")] - 1;
+        nouvelleQuantite = ControleSaisie(nouvelleQuantite, this);
+        if (nouvelleQuantite != null) {
+          document.getElementById("input" + this.getAttribute("data-id")).setAttribute("value", nouvelleQuantite);
+          panier[this.getAttribute("data-id")] = nouvelleQuantite;
+        }
+        localStorage.setItem("Panier", JSON.stringify(panier));
+        AffichagePanier(panier);
+      })
+
+    }
+
+    // Codage de la mise à jour directe de l'input
+    let inputsQuantite = document.getElementsByClassName("inputQuantite");
+    for (let i = 0; i < inputsQuantite.length; i++) {
+      inputsQuantite[i].addEventListener("change", function () {
+        let nouvelleQuantite = ControleSaisie(parseInt(this.value), this);
+        if (nouvelleQuantite != null) {
+          panier[this.getAttribute("data-id")] = nouvelleQuantite;
+        }
+        this.value = nouvelleQuantite;
+        localStorage.setItem("Panier", JSON.stringify(panier));
+        AffichageQuantiteTotalePanier(panier);
+        AffichageSommeTotalePanier(panier);
+        AffichageIconePanier(panier);
+      })
+
+    }
+
+
+  } else {
+    // Afficher que le panier est vide
+    document.getElementById("votrePanier").innerHTML += " est vide";
   }
-  
-  /*  
-  `<div class="row">
-                      <div class="col-6">
-                          <img class="cardProduitSeul" src="${
-                            furniture.imageUrl
-                          }" alt="Photo du modèle ${furniture.name}"/>
-                      </div>
-                      <div class="col-6">
-                          <h2>${furniture.name}</h2>
-                          <p>${furniture.description}</p>
-                          <p>${(furniture.price / 100)
-                            .toFixed(2)
-                            .replace(".", ",")} €</p>
-                          <label for="selectionVernis">Vernis:</label>
-                          <form id="myForm">
-                              <select name="vernis" id="selectionVernis">
-                              <option value="">--Choisissez un vernis--</option>
-                              </select>
-                          </form>
-                          <a href="panier.html" class="btn btn-primary btnCommandeProduit" data-id=${
-                          furniture._id
-                          }>Commander</a>
-                          <button class="btn btn-danger"  id="btnCommande">
-                      </div>
-                  </div>
-  `;
-  // création de la liste déroulante
-  var listeDeroulante = document.getElementById("selectionVernis");
-      for (let vernis in furniture.varnish) {
-        listeDeroulante.innerHTML += `<option value="${furniture.varnish[vernis]}">${furniture.varnish[vernis]}</option>`;
-      }
-  
-  document.getElementById("btnCommande").addEventListener("click", ajoutArticle);
-  
-  
-;
-  
-  // Un clic sur le bouton déclenche l'ajout de l'article au panier
-  
-  
-  */
-  
-  
+
+  AffichageQuantiteTotalePanier(panier);
+
+  AffichageSommeTotalePanier(panier);
+
+  AffichageIconePanier(panier);
+
+
+
+}
+class Furniture {
+  constructor(jsonFurniture) {
+    jsonFurniture && Object.assign(this, jsonFurniture);
+  }
+}
+
+// CODE PRINCIPAL //
+
+let furniture = "";
+let produitsPanier = [];
+let zoneAffichagePanier = document.getElementById("affichageProduitPanier");
+let panier = JSON.parse(localStorage.getItem("Panier"));
+let boutonsSupprimer = [];
+if (panier != null) {
+  produitsPanier = Object.keys(panier);
+}
+
+AffichagePanier(zoneAffichagePanier);
+
+
+
+
+
+
+
+
+
+
+

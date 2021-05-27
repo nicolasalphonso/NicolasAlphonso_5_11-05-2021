@@ -106,8 +106,6 @@ setTimeout(function () {
 
 }, 300);
 
-// Un clic sur le bouton déclenche l'ajout de l'article au panier
-
 
 
 
