@@ -191,16 +191,41 @@ function creationObjetContact() {
     "city": city,
     "email": email,
   };
+
+  localStorage.setItem("Objet contact", JSON.stringify(contact));
+
   return contact;
 }
 
+// fonction de validation de formulaire
+// source site officiel de Boostrap
+function ValidationFormulaire() {
+  'use strict';
+  window.addEventListener('load', function() {
+    let forms = document.getElementsByClassName('needs-validation');
+    var validation = Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === false) {
+          event.preventDefault();
+          event.stopPropagation();
+        } else {
+          EnvoiDonneesAPI();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  }, false);
+ 
+  
+}
+
+// fonction d'envoi de l'objet contact et du tableau products à l'API
 function EnvoiDonneesAPI() {
-  let erreur = false;
-  let contact = creationObjetContact();
-  let products = ["5beaadda1c9d440000a57d98", "5beaaf2e1c9d440000a57d9a"];
-  let donnees = {
-    "contact": contact,
-    "products": products
+    let contact = creationObjetContact();
+    let products = ["5beaadda1c9d440000a57d98", "5beaaf2e1c9d440000a57d9a"];
+    let donnees = {
+      "contact": contact,
+      "products": products
   }
   fetch("http://localhost:3000/api/furniture/order", {
     method: 'POST',
@@ -210,11 +235,16 @@ function EnvoiDonneesAPI() {
     body: JSON.stringify(donnees)
   })
     .then(response => response.json())
-    .then(resultat => console.log(resultat))
+    .then(resultat => {
+      localStorage.setItem("ReponseServeur", JSON.stringify(resultat));
+      setTimeout(document.location.href="confirmation.html", 300);
+
+    })
     .catch((error) => {
       console.error('Erreur:', error);
     });
-}
+  }
+
 
 
 class Furniture {
@@ -229,15 +259,13 @@ let furniture = "";
 let produitsPanier = [];
 let zoneAffichagePanier = document.getElementById("affichageProduitPanier");
 let panier = JSON.parse(localStorage.getItem("Panier"));
-let boutonsSupprimer = [];
 if (panier != null) {
   produitsPanier = Object.keys(panier);
 }
 
 AffichagePanier(zoneAffichagePanier);
 
-let boutonValidation = document.getElementById("boutonValidation");
-boutonValidation.addEventListener("click", EnvoiDonneesAPI);
+ValidationFormulaire();
 
 
 
