@@ -37,6 +37,7 @@ function AffichageQuantiteTotalePanier(panier) {
 //Fonction d'affichage de la somme totale du panier
 function AffichageSommeTotalePanier(pan) {
   let sommeTotale = (CalculSommePanier(pan) / 100).toFixed(2).replace(".", ",");
+  localStorage.setItem("SommeTotale", sommeTotale);
   let elementsSommeTotale = document.getElementsByClassName("affichageSommeTotale");
   for (let i = 0; i < elementsSommeTotale.length; i++) {
     elementsSommeTotale[i].innerHTML = sommeTotale;
@@ -192,7 +193,7 @@ function creationObjetContact() {
     "email": email,
   };
 
-  localStorage.setItem("Objet contact", JSON.stringify(contact));
+  localStorage.setItem("ObjetContact", JSON.stringify(contact));
 
   return contact;
 }
