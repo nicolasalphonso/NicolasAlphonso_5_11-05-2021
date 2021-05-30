@@ -37,7 +37,6 @@ function AffichageQuantiteTotalePanier(panier) {
 //Fonction d'affichage de la somme totale du panier
 function AffichageSommeTotalePanier(pan) {
   let sommeTotale = (CalculSommePanier(pan) / 100).toFixed(2).replace(".", ",");
-  console.log(sommeTotale);
   let elementsSommeTotale = document.getElementsByClassName("affichageSommeTotale");
   for (let i = 0; i < elementsSommeTotale.length; i++) {
     elementsSommeTotale[i].innerHTML = sommeTotale;
@@ -177,6 +176,47 @@ function AffichagePanier() {
 
 
 }
+
+// fonction de création de l'objet contact
+function creationObjetContact() {
+  let firstName = document.getElementById("firstName").value;
+  let lastName = document.getElementById("lastName").value;
+  let address = document.getElementById("address").value;
+  let city = document.getElementById("city").value;
+  let email = document.getElementById("email").value;
+  var contact = {
+    "firstName": firstName,
+    "lastName": lastName,
+    "address": address,
+    "city": city,
+    "email": email,
+  };
+  return contact;
+}
+
+function EnvoiDonneesAPI() {
+  let erreur = false;
+  let contact = creationObjetContact();
+  let products = ["5beaadda1c9d440000a57d98", "5beaaf2e1c9d440000a57d9a"];
+  let donnees = {
+    "contact": contact,
+    "products": products
+  }
+  fetch("http://localhost:3000/api/furniture/order", {
+    method: 'POST',
+    headers: {
+      "Content-Type" : "application/json",
+      },
+    body: JSON.stringify(donnees)
+  })
+    .then(response => response.json())
+    .then(resultat => console.log(resultat))
+    .catch((error) => {
+      console.error('Erreur:', error);
+    });
+}
+
+
 class Furniture {
   constructor(jsonFurniture) {
     jsonFurniture && Object.assign(this, jsonFurniture);
@@ -195,6 +235,9 @@ if (panier != null) {
 }
 
 AffichagePanier(zoneAffichagePanier);
+
+let boutonValidation = document.getElementById("boutonValidation");
+boutonValidation.addEventListener("click", EnvoiDonneesAPI);
 
 
 
