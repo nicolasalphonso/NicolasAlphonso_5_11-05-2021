@@ -46,10 +46,9 @@ function ajoutArticle() {
   }
   localStorage.setItem("Panier", JSON.stringify(panier));
 }
-
 // Fonction d'affichage de la quantité totale de produits en dessous des articles du panier
-function AffichageQuantiteTotalePanier(pan) {
-  let quantiteTotale = CalculNombreArticlesPanier(pan);
+function AffichageQuantiteTotalePanier(panier) {
+  let quantiteTotale = CalculNombreArticlesPanier(panier);
   let elementsQuantiteTotale = document.getElementsByClassName("affichageQuantiteTotale");
   for (let i = 0; i < elementsQuantiteTotale.length; i++) {
     elementsQuantiteTotale[i].innerHTML = quantiteTotale;
@@ -60,6 +59,7 @@ function AffichageQuantiteTotalePanier(pan) {
 //Fonction d'affichage de la somme totale du panier
 function AffichageSommeTotalePanier(pan) {
   let sommeTotale = (CalculSommePanier(pan) / 100).toFixed(2).replace(".", ",");
+  localStorage.setItem("SommeTotale", sommeTotale);
   let elementsSommeTotale = document.getElementsByClassName("affichageSommeTotale");
   for (let i = 0; i < elementsSommeTotale.length; i++) {
     elementsSommeTotale[i].innerHTML = sommeTotale;
@@ -231,6 +231,77 @@ function AffichagePanier() {
 
 
 }
+
+// fonction de création de l'objet contact
+function creationObjetContact() {
+  let firstName = document.getElementById("firstName").value;
+  let lastName = document.getElementById("lastName").value;
+  let address = document.getElementById("address").value;
+  let city = document.getElementById("city").value;
+  let email = document.getElementById("email").value;
+  var contact = {
+    "firstName": firstName,
+    "lastName": lastName,
+    "address": address,
+    "city": city,
+    "email": email,
+  };
+
+  localStorage.setItem("ObjetContact", JSON.stringify(contact));
+
+  return contact;
+}
+
+// fonction de validation de formulaire
+// source site officiel de Boostrap
+function ValidationFormulaire() {
+  'use strict';
+  window.addEventListener('load', function() {
+    let forms = document.getElementsByClassName('needs-validation');
+    var validation = Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === false) {
+          event.preventDefault();
+          event.stopPropagation();
+        } else {
+          EnvoiDonneesAPI();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  }, false);
+ 
+  
+}
+
+// fonction d'envoi de l'objet contact et du tableau products à l'API
+function EnvoiDonneesAPI() {
+    let contact = creationObjetContact();
+    let products = ["5beaadda1c9d440000a57d98", "5beaaf2e1c9d440000a57d9a"];
+    let donnees = {
+      "contact": contact,
+      "products": products
+  }
+  fetch("http://localhost:3000/api/furniture/order", {
+    method: 'POST',
+    headers: {
+      "Content-Type" : "application/json",
+      },
+    body: JSON.stringify(donnees)
+  })
+    .then(response => response.json())
+    .then(resultat => {
+      localStorage.setItem("ReponseServeur", JSON.stringify(resultat));
+      setTimeout(document.location.href="confirmation.html", 300);
+
+    })
+    .catch((error) => {
+      console.error('Erreur:', error);
+    });
+  }
+
+
+
 class Furniture {
   constructor(jsonFurniture) {
     jsonFurniture && Object.assign(this, jsonFurniture);
@@ -243,11 +314,13 @@ let furniture = "";
 let produitsPanier = [];
 let zoneAffichagePanier = document.getElementById("affichageProduitPanier");
 let panier = JSON.parse(localStorage.getItem("Panier"));
-let boutonsSupprimer = [];
 if (panier != null) {
   produitsPanier = Object.keys(panier);
 }
+
 AffichagePanier(zoneAffichagePanier);
+
+ValidationFormulaire();
 
 
 
