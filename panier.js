@@ -306,9 +306,6 @@ function EnvoiDonneesAPI() {
       contact: contact,
       products: products,
     };
-    // On recalcule la somme totale au cas où l'utilisateur aurait modifié le localstorage
-    VerificationQuantites();
-    AffichageSommeTotalePanier(panier);
 
     // on envoie les données à l'API puis on récupère la réponse que l'on stocke dans le local storage pour le message de confirmation
     // s'il y a une erreur, une popup apparait pour informer le client
