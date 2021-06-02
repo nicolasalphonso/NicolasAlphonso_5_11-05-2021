@@ -20,7 +20,7 @@ fetch("http://localhost:3000/api/furniture")  // requête à l'API
                             <p class="card-text">${furniture.description}</p>
                             <p class="card-text">${(furniture.price/100).toFixed(2).replace( ".", "," )} €</p>
                             <div class="text-center">
-                            <a href="produit.html?id=${furniture._id}" class="btn btn-primary selecteurProduit" data-id=${furniture._id}>Voir la fiche produit</a>
+                                <a href="produit.html?id=${furniture._id}" class="btn btn-primary selecteurProduit" data-id=${furniture._id}>Voir la fiche produit</a>
                             </div>
                     </div>
                 </div>

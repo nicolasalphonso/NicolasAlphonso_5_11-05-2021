@@ -60,12 +60,12 @@ function ListeDeroulanteVernis() {
 //fonction d'affichage du produit
 function AffichageProduitSeul() {
   document.getElementById("affichageDuProduit").innerHTML = `<div class="row">
-  <div class="col-6">
+  <div class="col-12 col-lg-6">
       <img class="cardProduitSeul" src="${
         furniture.imageUrl
       }" alt="Photo du modèle ${furniture.name}"/>
   </div>
-  <div class="col-6">
+  <div class="col-12 col-lg-6">
       <h2>${furniture.name}</h2>
       <p>${furniture.description}</p>
       <p>${(furniture.price / 100).toFixed(2).replace(".", ",")} €</p>
@@ -75,9 +75,11 @@ function AffichageProduitSeul() {
           <option value="">--Choisissez un vernis--</option>
           </select>
       </form>
-      <a href="panier.html" class="btn btn-primary btnCommandeProduit" id="btnCommande" data-id=${
-        furniture._id
+      <div class="text-center">
+        <a href="panier.html" class="btn btn-primary btnCommandeProduit" id="btnCommande" data-id=${
+          furniture._id
       }>Ajouter au panier</a>
+      <div class="text-center">
   </div>
 </div>
 `;
