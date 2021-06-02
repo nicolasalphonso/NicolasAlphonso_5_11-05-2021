@@ -169,12 +169,12 @@ function AffichagePanier() {
     produitsPanier = Object.keys(panier);
     for (let produit in produitsPanier) {
       furniture = JSON.parse(localStorage.getItem(produitsPanier[produit]));
-      zoneAffichagePanier.innerHTML += `<div class="row articlePanier">
+      zoneAffichagePanier.innerHTML += `<div class="row articlePanier d-flex">
           <hr />
-          <div class="col-3">
+          <div class="col-8 col-lg-3 order-0">
             <img src="${furniture.imageUrl}" class="imagePanier" />
           </div>
-          <div class="col-7">
+          <div class="col-12 col-lg-7 order-2 order-lg-1">
             <div class="row">
               <h3>${furniture.name}</h3>
               <p class="text-success">En stock</p>
@@ -189,21 +189,24 @@ function AffichagePanier() {
                   type="number"
                   id="input${furniture._id}"
                   data-id="${furniture._id}"
-                  class="inputQuantite"
+                  class="inputQuantite col-4"
                   min="1"
                   max="10"
                   value=${panier[produitsPanier[produit]]}
                 />
                 <i class="bi bi-plus-circle" data-id="${furniture._id}"></i>
-                <button type="button" class="btn btn-danger" data-id="${
-                  furniture._id
-                }">Supprimer</button>
               </p>
+              
             </div>
           </div>
-          <div class="col-2 text-right">
+          <div class="col-4 col-lg-2 order-1 order-lg-2 text-right">
             <p>${(furniture.price / 100).toFixed(2).replace(".", ",")} €</p>
           </div>
+          <div class="text-center col-12 order-3">
+              <button class="btn btn-danger " data-id="${
+                furniture._id
+              }">Supprimer</button>
+              </div>
         </div>`;
     }
 

@@ -1,3 +1,7 @@
+.btn {
+  margin-top: 10px;
+}
+
 .cardProduit {
   height: 470px;
 }
@@ -23,7 +27,6 @@
 
 .articlePanier {
   margin-bottom: 30px;
-  max-height: 187px;
   max-width: 100%;
 }
 
