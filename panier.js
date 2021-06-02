@@ -271,21 +271,23 @@ function ValidationFormulaire() {
     "load",
     function () {
       let form = document.getElementById("formulaireContact");
-      form.addEventListener("submit",  function (event) {
-            if (form.checkValidity() === false) {
-              // on désactive l'action normale du bouton tant que le formulaire n'est pas correctement rempli
-              event.preventDefault();
-              event.stopPropagation();
-            } else {
-              // sinon on envoie les données
-              EnvoiDonneesAPI();
-            }
-            // après une première tentative du client, on fait apparaître les indications visuelles des champs incorrectement remplis
-            // bootstrap permettra une intéraction visuelle à chaque frappe de l'utilisateur
-            form.classList.add("was-validated");
-          },
-          false
-        );
+      form.addEventListener(
+        "submit",
+        function (event) {
+          if (form.checkValidity() === false) {
+            // on désactive l'action normale du bouton tant que le formulaire n'est pas correctement rempli
+            event.preventDefault();
+            event.stopPropagation();
+          } else {
+            // sinon on envoie les données
+            EnvoiDonneesAPI();
+          }
+          // après une première tentative du client, on fait apparaître les indications visuelles des champs incorrectement remplis
+          // bootstrap permettra une intéraction visuelle à chaque frappe de l'utilisateur
+          form.classList.add("was-validated");
+        },
+        false
+      );
     },
     false
   );
@@ -293,7 +295,6 @@ function ValidationFormulaire() {
 
 // fonction d'envoi de l'objet contact et du tableau products à l'API
 function EnvoiDonneesAPI() {
-
   let contact = CreationObjetContact();
 
   // si products est bien un tableau et contact un objet, on crée les données
@@ -302,8 +303,8 @@ function EnvoiDonneesAPI() {
       contact: contact,
       products: products,
     };
-
     // On recalcule la somme totale au cas où l'utilisateur aurait modifié le localstorage
+    VerificationQuantites();
     AffichageSommeTotalePanier(panier);
 
     // on envoie les données à l'API puis on récupère la réponse que l'on stocke dans le local storage pour le message de confirmation
@@ -334,6 +335,38 @@ function EnvoiDonneesAPI() {
   }
 }
 
+// fontion qui vérifie que les quantités de chaque article sont valables
+function VerificationQuantites() {
+  let inputsQuantite = document.getElementsByClassName("inputQuantite");
+
+  let maximum = 10;
+
+  // boucle sur chaque input et mise à jour
+  for (let i = 0; i < inputsQuantite.length; i++) {
+
+    var changement = false;
+
+    let nouvelleQuantite = parseInt(inputsQuantite[i].value);
+
+    if (nouvelleQuantite > maximum) {
+      panier[inputsQuantite[i].getAttribute("data-id")] = maximum;
+      changement = true;
+    } else if (nouvelleQuantite < 1 || typeof nouvelleQuantite == null) {
+      panier[inputsQuantite[i].getAttribute("data-id")] = 1;
+      changement = true;
+    }
+  }
+
+  // s'il y a eu un changement
+  if (changement) {
+    // avertissement à l'utilisateur
+    alert ("Votre panier comportait des erreurs, veuillez vérifer les quantités");
+    //mise à jour du panier et réaffichage, si besoin
+    localStorage.setItem("Panier", JSON.stringify(panier));
+    setTimeout(AffichagePanier, 300);
+  }
+}
+
 class Furniture {
   constructor(jsonFurniture) {
     jsonFurniture && Object.assign(this, jsonFurniture);
@@ -351,6 +384,8 @@ if (panier != null) {
 
 let zoneAffichagePanier = document.getElementById("affichageProduitPanier");
 
-AffichagePanier(zoneAffichagePanier);
+AffichagePanier();
+
+VerificationQuantites();
 
 ValidationFormulaire();
