@@ -1,8 +1,9 @@
 //Fonction pour calculer le nombre d'articles dans le panier
+// l'existence du panier est vérifié dans la fonction appelante
 function CalculNombreArticlesPanier (pan) {
     let quantite = 0;
     for (i in pan) {
-        quantite += pan[i];
+        quantite += panier[i];
     }
     return quantite
 }
@@ -22,3 +23,9 @@ function AffichageIconePanier(pan) {
 let panier = JSON.parse(localStorage.getItem("Panier"));
 
 AffichageIconePanier(panier);
+
+// Exemple de test
+/*
+let valeurTest = {1:"val1",2:"val2",52:"val4"};
+console.log(AffichageIconePanier(valeurTest));
+*/

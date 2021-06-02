@@ -19,10 +19,14 @@ function AffichageIconePanier(pan) {
   }
 }
 
-// fonction d'affichage du message de confirmation de commande
+// Fonction d'affichage du message de confirmation de commande
 function AffichageMessage() {
   let zoneAffichageMessage = document.getElementById("affichageMessage");
+
+  // on récupère les données de la réponse du serveur enregistrées dans le local storage
   let data = JSON.parse(localStorage.getItem("ReponseServeur"));
+
+  // on affiche le message
   zoneAffichageMessage.innerHTML = `<h2 class="alert-heading">Réussi !</h2>
   <p>Nous vous remercions pour votre commande n° ${data.orderId} de :
   <ul id="produitsCommande">

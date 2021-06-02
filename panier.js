@@ -8,7 +8,7 @@ function CalculNombreArticlesPanier(panier) {
 }
 
 // Fonction pour extraire le prix du produit
-function GetPrixProduit(id, produitsPanier) {
+function GetPrixProduit(id) {
   var furnitureJSON = localStorage.getItem(id);
   furniture = JSON.parse(furnitureJSON);
   return furniture.price;
@@ -18,55 +18,22 @@ function GetPrixProduit(id, produitsPanier) {
 function CalculSommePanier(panier) {
   let somme = 0;
   for (id in panier) {
-    prixProduit = GetPrixProduit(id, produitsPanier);
+    prixProduit = GetPrixProduit(id);
     somme += panier[id] * prixProduit;
   }
   return somme;
 }
 
-// fonction pour ajouter un article au panier
-function ajoutArticle() {
-  var panier = {};
-  // si le panier n'existe pas, il faut le créer
-  if (localStorage.getItem("Panier") === null) {
-    panier[id] = 1;
-  }
-  // si le panier existe
-  else {
-    //on transforme le panier en objet
-    panier = JSON.parse(localStorage.getItem("Panier"));
-    // si l'entrée existe ajouter 1 à la quantité
-    // sinon on la crée et on lui assigne une quantité de 1
-    if (panier[id] > 0) {
-      panier[id] += 1;
-    } else {
-      panier[id] = 1;
-    }
-  }
-  localStorage.setItem("Panier", JSON.stringify(panier));
-}
-// Fonction d'affichage de la quantité totale de produits en dessous des articles du panier
-function AffichageQuantiteTotalePanier(panier) {
-  let quantiteTotale = CalculNombreArticlesPanier(panier);
-  let elementsQuantiteTotale = document.getElementsByClassName(
-    "affichageQuantiteTotale"
-  );
-  for (let i = 0; i < elementsQuantiteTotale.length; i++) {
-    elementsQuantiteTotale[i].innerHTML = quantiteTotale;
-  }
-}
-
 //Fonction d'affichage de la somme totale du panier
 function AffichageSommeTotalePanier(pan) {
+  // récupération de la somme totale et formatage
   let sommeTotale = (CalculSommePanier(pan) / 100).toFixed(2).replace(".", ",");
+  // enregistrement de la somme totale dans le local storage
   localStorage.setItem("SommeTotale", sommeTotale);
-  let elementsSommeTotale = document.getElementsByClassName(
-    "affichageSommeTotale"
-  );
-  for (let i = 0; i < elementsSommeTotale.length; i++) {
-    elementsSommeTotale[i].innerHTML = sommeTotale;
-  }
+  // affichage de la somme
+  document.getElementById("affichageSommeTotale").innerHTML = sommeTotale;
 }
+
 // Fonction d'affichage du nombre d'articles sur l'icône de panier dans le header
 function AffichageIconePanier(pan) {
   let chiffreIconePanier = document.getElementById("nombreArticlesPanier");
@@ -84,38 +51,121 @@ function AffichageIconePanier(pan) {
 function ControleSaisie(saisie, element) {
   // on vérifie qu'un nombre est entré
   // si non, on retourne une valeur de 1
+  if (typeof saisie === "number" && !isNaN(saisie)) {
+    // valeur que l'on ne veut pas dépasser
+    let maximum = 10;
 
-  // valeur que l'on ne veut pas dépasser
-  let maximum = 10;
-
-  // si la saisie est inférieure à 0, l'utilisateur veut-il supprimer l'article sinon on met 1
-  // ou si la saisie est supérieure à Max,
-  if (saisie > maximum) {
-    alert(
-      "Vous ne pouvez pas commander plus de 10 quantités de chaque article"
-    );
-    saisie = 10;
-    element.value = saisie;
-  } else if (saisie < 1) {
-    if (confirm("Voulez-vous supprimer l'article ?")) {
-      delete panier[element.getAttribute("data-id")];
-      localStorage.setItem("Panier", JSON.stringify(panier));
-      AffichagePanier();
-      saisie = null;
-    } else {
-      saisie = 1;
+    // si la saisie est supérieure à maximum, on inscrit maximum
+    // ou si la saisie est inférieure à 0, "l'utilisateur veut-il supprimer l'article": si non on met 1
+    if (saisie > maximum) {
+      alert(
+        "Vous ne pouvez pas commander plus de 10 quantités de chaque article"
+      );
+      saisie = maximum;
+      element.value = saisie;
+    } else if (saisie < 1) {
+      if (confirm("Voulez-vous supprimer l'article ?")) {
+        delete panier[element.getAttribute("data-id")];
+        localStorage.setItem("Panier", JSON.stringify(panier));
+        AffichagePanier();
+        saisie = null;
+      } else {
+        saisie = 1;
+      }
     }
+  } else {
+    saisie = 1;
   }
-
   return saisie;
+}
+
+// la fonction code l'action des boutons supprimer
+function BoutonsSupprimer() {
+  let boutonsSupprimer = document.getElementsByClassName("btn-danger");
+  for (let i = 0; i < boutonsSupprimer.length; i++) {
+    boutonsSupprimer[i].addEventListener("click", function () {
+      //on efface l'entrée concernée du panier
+      delete panier[this.getAttribute("data-id")];
+
+      //on met le local storage à jour
+      localStorage.setItem("Panier", JSON.stringify(panier));
+
+      AffichagePanier();
+    });
+  }
+}
+
+// la fonction code l'action des boutons +
+function BoutonsPlus() {
+  let boutonsPlus = document.getElementsByClassName("bi-plus-circle");
+  for (let i = 0; i < boutonsPlus.length; i++) {
+    boutonsPlus[i].addEventListener("click", function () {
+      let nouvelleQuantite = (panier[this.getAttribute("data-id")] += 1);
+
+      // on corrige la saisie si besoin
+      nouvelleQuantite = ControleSaisie(nouvelleQuantite, this);
+
+      // on met à jour le panier
+      panier[this.getAttribute("data-id")] = nouvelleQuantite;
+      localStorage.setItem("Panier", JSON.stringify(panier));
+      document
+        .getElementById("input" + this.getAttribute("data-id"))
+        .setAttribute("value", nouvelleQuantite);
+
+      AffichagePanier();
+    });
+  }
+}
+
+// la fonction code l'action des boutons -
+function BoutonsMoins() {
+  let boutonsMoins = document.getElementsByClassName("bi-dash-circle");
+  for (let i = 0; i < boutonsMoins.length; i++) {
+    boutonsMoins[i].addEventListener("click", function () {
+      let nouvelleQuantite = panier[this.getAttribute("data-id")] - 1;
+      // on contrôle la nouvelle quantité
+      nouvelleQuantite = ControleSaisie(nouvelleQuantite, this);
+      //si la quantité corrigée n'est pas "null", on met à jour "panier"
+      if (nouvelleQuantite != null) {
+        document
+          .getElementById("input" + this.getAttribute("data-id"))
+          .setAttribute("value", nouvelleQuantite);
+        panier[this.getAttribute("data-id")] = nouvelleQuantite;
+      }
+      // on met à jour le local storage
+      localStorage.setItem("Panier", JSON.stringify(panier));
+
+      AffichagePanier(panier);
+    });
+  }
+}
+
+// la fonction met à jour les quantités du panier lors de la saisie directe dans les inputs texts
+function UpdateInputs() {
+  let inputsQuantite = document.getElementsByClassName("inputQuantite");
+  for (let i = 0; i < inputsQuantite.length; i++) {
+    inputsQuantite[i].addEventListener("change", function () {
+      // on contrôle et corrige la saisie, si besoin
+      let nouvelleQuantite = ControleSaisie(parseInt(this.value), this);
+      // on met à jour le panier
+      if (nouvelleQuantite) {
+        panier[this.getAttribute("data-id")] = nouvelleQuantite;
+      }
+      localStorage.setItem("Panier", JSON.stringify(panier));
+
+      AffichageSommeTotalePanier(panier);
+
+      AffichageIconePanier(panier);
+    });
+  }
 }
 
 //fontion d'affichage des produits du panier
 function AffichagePanier() {
   //On efface la zone d'affichage
   zoneAffichagePanier.innerHTML = "";
-  console.log(panier);
-  if (panier != null && panier != {}) {
+  // si le panier n'est pas vide ou inexistant
+  if (panier != null && Object.keys(panier).length != 0) {
     produitsPanier = Object.keys(panier);
     for (let produit in produitsPanier) {
       furniture = JSON.parse(localStorage.getItem(produitsPanier[produit]));
@@ -161,84 +211,44 @@ function AffichagePanier() {
     document.getElementById("retourPanierVide").style.display = "none";
 
     // Codage des boutons supprimer
-    boutonsSupprimer = document.getElementsByClassName("btn-danger");
-    for (let i = 0; i < boutonsSupprimer.length; i++) {
-      boutonsSupprimer[i].addEventListener("click", function () {
-        delete panier[this.getAttribute("data-id")];
-        localStorage.setItem("Panier", JSON.stringify(panier));
-        AffichagePanier();
-      });
-    }
+    BoutonsSupprimer();
 
     // Codage des boutons +
-    let boutonsPlus = document.getElementsByClassName("bi-plus-circle");
-    for (let i = 0; i < boutonsPlus.length; i++) {
-      boutonsPlus[i].addEventListener("click", function () {
-        let nouvelleQuantite = (panier[this.getAttribute("data-id")] += 1);
-        nouvelleQuantite = ControleSaisie(nouvelleQuantite, this);
-        panier[this.getAttribute("data-id")] = nouvelleQuantite;
-        localStorage.setItem("Panier", JSON.stringify(panier));
-        document
-          .getElementById("input" + this.getAttribute("data-id"))
-          .setAttribute("value", nouvelleQuantite);
-        AffichagePanier(panier);
-      });
-    }
+    BoutonsPlus();
 
     // Codage des boutons -
-    let boutonsMoins = document.getElementsByClassName("bi-dash-circle");
-    for (let i = 0; i < boutonsPlus.length; i++) {
-      boutonsMoins[i].addEventListener("click", function () {
-        let nouvelleQuantite = panier[this.getAttribute("data-id")] - 1;
-        nouvelleQuantite = ControleSaisie(nouvelleQuantite, this);
-        if (nouvelleQuantite != null) {
-          document
-            .getElementById("input" + this.getAttribute("data-id"))
-            .setAttribute("value", nouvelleQuantite);
-          panier[this.getAttribute("data-id")] = nouvelleQuantite;
-        }
-        localStorage.setItem("Panier", JSON.stringify(panier));
-        AffichagePanier(panier);
-      });
-    }
+    BoutonsMoins();
 
     // Codage de la mise à jour directe de l'input
-    let inputsQuantite = document.getElementsByClassName("inputQuantite");
-    for (let i = 0; i < inputsQuantite.length; i++) {
-      inputsQuantite[i].addEventListener("change", function () {
-        let nouvelleQuantite = ControleSaisie(parseInt(this.value), this);
-        if (nouvelleQuantite != null) {
-          panier[this.getAttribute("data-id")] = nouvelleQuantite;
-        }
-        this.value = nouvelleQuantite;
-        localStorage.setItem("Panier", JSON.stringify(panier));
-        AffichageQuantiteTotalePanier(panier);
-        AffichageSommeTotalePanier(panier);
-        AffichageIconePanier(panier);
-      });
-    }
+    UpdateInputs();
   } else {
+    //si le panier est vide ou inexistant
     // Afficher que le panier est vide
     document.getElementById("votrePanier").innerHTML += " est vide";
 
-    //cacher le formulaire
+    // cacher le formulaire
     document.getElementById("formulaireContact").style.display = "none";
   }
 
-  AffichageQuantiteTotalePanier(panier);
+  // affichage de la quantité totale
+  document.getElementById("affichageQuantiteTotale").innerHTML =
+    CalculNombreArticlesPanier(panier);
 
   AffichageSommeTotalePanier(panier);
 
   AffichageIconePanier(panier);
 }
 
-// fonction de création de l'objet contact
-function creationObjetContact() {
+// La fonction crée l'objet contact qui sera envoyé à l'API
+
+function CreationObjetContact() {
   let firstName = document.getElementById("firstName").value;
   let lastName = document.getElementById("lastName").value;
   let address = document.getElementById("address").value;
   let city = document.getElementById("city").value;
   let email = document.getElementById("email").value;
+
+  //création de l'objet contact
   var contact = {
     firstName: firstName,
     lastName: lastName,
@@ -247,34 +257,35 @@ function creationObjetContact() {
     email: email,
   };
 
+  //enregistrement de contact dans le local storage
   localStorage.setItem("ObjetContact", JSON.stringify(contact));
 
   return contact;
 }
 
 // fonction de validation de formulaire
-// source site officiel de Boostrap
+// source site officiel de Boostrap - adapté
 function ValidationFormulaire() {
   "use strict";
   window.addEventListener(
     "load",
     function () {
-      let forms = document.getElementsByClassName("needs-validation");
-      var validation = Array.prototype.filter.call(forms, function (form) {
-        form.addEventListener(
-          "submit",
-          function (event) {
+      let form = document.getElementById("formulaireContact");
+      form.addEventListener("submit",  function (event) {
             if (form.checkValidity() === false) {
+              // on désactive l'action normale du bouton tant que le formulaire n'est pas correctement rempli
               event.preventDefault();
               event.stopPropagation();
             } else {
+              // sinon on envoie les données
               EnvoiDonneesAPI();
             }
+            // après une première tentative du client, on fait apparaître les indications visuelles des champs incorrectement remplis
+            // bootstrap permettra une intéraction visuelle à chaque frappe de l'utilisateur
             form.classList.add("was-validated");
           },
           false
         );
-      });
     },
     false
   );
@@ -282,12 +293,21 @@ function ValidationFormulaire() {
 
 // fonction d'envoi de l'objet contact et du tableau products à l'API
 function EnvoiDonneesAPI() {
-  let contact = creationObjetContact();
+
+  let contact = CreationObjetContact();
+
+  // si products est bien un tableau et contact un objet, on crée les données
   if (Array.isArray(products) && typeof contact === "object") {
     let donnees = {
       contact: contact,
       products: products,
     };
+
+    // On recalcule la somme totale au cas où l'utilisateur aurait modifié le localstorage
+    AffichageSommeTotalePanier(panier);
+
+    // on envoie les données à l'API puis on récupère la réponse que l'on stocke dans le local storage pour le message de confirmation
+    // s'il y a une erreur, une popup apparait pour informer le client
     fetch("http://localhost:3000/api/furniture/order", {
       method: "POST",
       headers: {
@@ -301,6 +321,9 @@ function EnvoiDonneesAPI() {
         setTimeout((document.location.href = "confirmation.html"), 300);
       })
       .catch((error) => {
+        alert(
+          "Nous rencontrons un problème avec votre commande. Veuillez réessayer ou contacter notre service client."
+        );
         console.error("Erreur de fetch POST:", error);
       });
   } else {

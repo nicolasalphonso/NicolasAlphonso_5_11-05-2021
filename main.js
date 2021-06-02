@@ -4,31 +4,14 @@ class Furniture {
     }
 }
 
-function $_GET(param) {
-	var vars = {};
-	window.location.href.replace( location.hash, '' ).replace( 
-		/[?&]+([^=&]+)=?([^&]*)?/gi, // regexp
-		function( m, key, value ) { // callback
-			vars[key] = value !== undefined ? value : '';
-		}
-	);
-
-	if ( param ) {
-		return vars[param] ? vars[param] : null;	
-	}
-	return vars;
-}
-
-function choixProduit(id) {
-
-}
-
-fetch("http://localhost:3000/api/furniture")
-.then ( data => data.json())
-.then( jsonListFurniture => {
+// code principal - affichage de l'ensemble des produits
+fetch("http://localhost:3000/api/furniture")  // requête à l'API
+.then ( data => data.json())  // lit le stream Response et retourne une promesse qui s'auto-résout et retourne corps requête au format JSON
+.then( jsonListFurniture => { // on récupère chaque élément et on en fait un Objet furniture
     for (let jsonFurniture of jsonListFurniture) {
         let furniture = new Furniture(jsonFurniture);
-        document.getElementById("affichageDesFurnitures").innerHTML +=
+        //on affiche chaque produit
+        document.getElementById("affichageDesFurnitures").innerHTML += 
                     `<div class="col-3" >
                     <div class="card cardProduit">
                     <img class="cardImg" src="${furniture.imageUrl}" alt="Photo du modèle ${furniture.name}"/>
@@ -41,7 +24,7 @@ fetch("http://localhost:3000/api/furniture")
                 </div>
                 </div>
                     `;
-        console.log(furniture);
+        // je stocke les produits dans le local storage
         localStorage.setItem(`${furniture._id}`, JSON.stringify(furniture));
     }
 });
