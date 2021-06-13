@@ -27,7 +27,7 @@ function AffichageMessage() {
   let data = JSON.parse(localStorage.getItem("ReponseServeur"));
 
   // on affiche le message
-  zoneAffichageMessage.innerHTML = `<h2 class="alert-heading">Réussi !</h2>
+  zoneAffichageMessage.innerHTML = `<h2 class="alert-heading">Félicitations !</h2>
   <p>Nous vous remercions pour votre commande n° ${data.orderId} de :
   <ul id="produitsCommande">
   </ul>

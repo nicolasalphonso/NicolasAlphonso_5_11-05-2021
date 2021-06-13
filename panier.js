@@ -283,6 +283,7 @@ function ValidationFormulaire() {
             event.stopPropagation();
           } else {
             // sinon on envoie les données
+            event.preventDefault();
             EnvoiDonneesAPI();
           }
           // après une première tentative du client, on fait apparaître les indications visuelles des champs incorrectement remplis
